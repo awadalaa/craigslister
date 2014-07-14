@@ -30,7 +30,7 @@ mongoose.connect(uristring, function (err, res) {
 });
 require('./app/routes.js')(app); 
 
-app.listen('8081')
+app.listen(port)
 
 console.log('running on http://localhost:8081');
 
