@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>CL SMS</title>
+    <meta name="viewport" content="width=1000, initial-scale=1.0, maximum-scale=1.0">
+    <link href="/lib/bootstrap-3.1.1/css/bootstrap.css" rel="stylesheet">
+	<link href="stylesheets/flat-ui.css" rel="stylesheet">
+    <link href="stylesheets/demo.css" rel="stylesheet">
+    <link rel="shortcut icon" href="images/favicon.ico">
+	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+	<link rel="stylesheet" href="/fonts/font-awesome-4.1.0/css/font-awesome.min.css">
+	<style>
+	.listing{
+		padding:5px;
+		background-color:#ECF0F1;
+		color:#2C3E50;
+		margin:5px;
+	}
+	.listing h5{
+		font-size:12pt;
+	}
+	.content{
+	padding-left: 20px;
+	}
+	.fa{
+	padding-right:5px;
+	}
+	
+	</style>
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
+    <!--[if lt IE 9]>
+      <script src="javascripts/js/html5shiv.js"></script>
+      <script src="javascriptsjs/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="container">
+      <form id="SMS-TEXT" class="SMS-TEXT" role="form">
+        <h1><span class="demo-heading-note">Search Craigslist</span></h1>
+        <input type="search" class="form-control" id="search" placeholder="Enter something in here to to search craigslist">
+      </form>
+	   <div id="results"></div>
+
+    </div> <!-- /container -->
+	
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+   <script src="/javascripts/js/jquery-1.8.3.min.js"></script>
+	<script type="text/javascript">
+	
+	
+	$('#SMS-TEXT').submit(function(event) {
+		event.preventDefault();
+	});
+	
+	function sendtext(pid,url){
+		console.log('pid',pid,'url',url);
+		var parameters = 
+			{ pid:pid
+			,url:url };
+		$.post( '/sms',parameters, function(data) {
+			console.log('sms senter');
+			
+		});
+	}
+	
+	
+	$(function(){
+		$('#search').on('keyup', function(e){
+			if (e.keyCode == 13) {
+			   console.log('key pressed val:',$(this).val() );
+				 var parameters = { search: $(this).val() };
+					$.get( '/searching',parameters, function(data) {
+					$('#results').empty();
+					var html='';
+					for (var key in data){
+						html += "<div class='listing'>"
+						html += "<a href='#'  id='sms' onClick=sendtext("+data[key].pid +",'"+data[key].url +"') data=' "  + data[key].pid +  "'><i class='fa fa-mobile-phone fa-1'></i> Click to text phone</a><div>" + data[key].title + "</div>"
+						html += "<div class='content'><a href='" + data[key].url + "' target='_blank'>"+data[key].url+"</a><br>"
+						html += "<div><i class='fa fa-location-arrow fa-1'></i> " + data[key].location + "</div>"
+						html += "<div><i class='fa fa-usd fa-1'></i> " + data[key].price + "</div>"
+						html += "</div></div>"
+						$('#results').append(html);
+					}
+				});
+			
+			}
+		});
+		
+		
+	});
+	
+	</script>
+    <script src="/javascripts/js/jquery-ui-1.10.3.custom.min.js"></script>
+    <script src="/javascripts/js/jquery.ui.touch-punch.min.js"></script>
+    <script src="/javascripts/js/bootstrap.min.js"></script>
+  </body>
+</html>
